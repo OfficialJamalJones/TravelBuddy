@@ -24,10 +24,12 @@ class LocationInputView: UIView {
         }
     }
     
+    //var backButton = UIButton(type: .system)
+    
     let backButton: UIButton = {
         let button = UIButton(type: .system)
         button.setImage(#imageLiteral(resourceName: "baseline_arrow_back_black_36dp").withRenderingMode(.alwaysOriginal), for: .normal)
-        button.addTarget(self, action: #selector(handleBackTapped), for: .touchUpInside)
+        button.addTarget(LocationInputView.self, action: #selector(handleTap), for: .touchUpInside)
         return button
     }()
     
@@ -60,14 +62,14 @@ class LocationInputView: UIView {
         let tf = UITextField()
         tf.placeholder = "Current Location"
         tf.backgroundColor = .groupTableViewBackground
-        tf.isEnabled = false
+        tf.returnKeyType = .search
         tf.font = UIFont.systemFont(ofSize: 14)
-        
         let paddingView = UIView()
         paddingView.setDimensions(height: 30, width: 8)
         tf.leftView = paddingView
         tf.leftViewMode = .always
-        
+        tf.delegate = self
+        tf.clearButtonMode = .whileEditing
         return tf
     }()
     
@@ -98,8 +100,13 @@ class LocationInputView: UIView {
     }
     
     // MARK: - Selectors
+    @objc func handleBackTapped(_ sender: UITapGestureRecognizer? = nil) {
+        print("Back Tapped")
+        delegate?.dismissLocationInputView()
+    }
     
-    @objc func handleBackTapped() {
+    @objc func handleTap() {
+        print("Back Tapped")
         delegate?.dismissLocationInputView()
     }
     
@@ -110,10 +117,14 @@ class LocationInputView: UIView {
         addShadow()
         
         addSubview(backButton)
-        backButton.anchor(top: topAnchor, left: leftAnchor, paddingTop: 44,
+        backButton.anchor(top: topAnchor, left: leftAnchor, paddingTop: 50,
                           paddingLeft: 12, width: 24, height: 24)
-        
+        //backButton.addTarget(self, action: #selector(handleTap), for: .touchUpInside)
+        print("Back Button: \(backButton)")
+//        let tap = UITapGestureRecognizer(target: LocationInputView.self, action: #selector(handleBackTapped(_:)))
+//        backButton.addGestureRecognizer(tap)
         addSubview(titleLabel)
+        
         titleLabel.centerY(inView: backButton)
         titleLabel.centerX(inView: self)
         

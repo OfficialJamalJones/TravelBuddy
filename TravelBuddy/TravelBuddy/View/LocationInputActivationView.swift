@@ -25,7 +25,15 @@ class LocationInputActivationView: UIView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
+        
+        print("Init: LocationInputActivationView")
+        
         backgroundColor = .white
+        layer.shadowColor = UIColor.black.cgColor
+        layer.shadowOpacity = 0.55
+        layer.shadowOffset = CGSize(width: 0.5, height: 0.5)
+        layer.masksToBounds = false
+        
         addSubview(indicatorView)
         indicatorView.centerYAnchor.constraint(equalTo: self.centerYAnchor).isActive = true
         indicatorView.leftAnchor.constraint(equalTo: self.leftAnchor, constant: 16).isActive = true
