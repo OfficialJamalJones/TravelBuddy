@@ -8,13 +8,21 @@
 import UIKit
 import Firebase
 import MapKit
+import CoreLocation
 
 protocol LocationInputActivationViewDelegate {
     func presentLocationInputView()
 }
 
-
 class HomeController: UIViewController {
+    
+    @IBOutlet weak var topConstraint: NSLayoutConstraint!
+    
+    @IBOutlet weak var trailingConstraint: NSLayoutConstraint!
+    
+    @IBOutlet weak var leadingConstraint: NSLayoutConstraint!
+    
+    @IBOutlet weak var mainView: UIView!
     
     @IBOutlet weak var nameLabel: UILabel!
     
@@ -26,7 +34,7 @@ class HomeController: UIViewController {
     
     @IBOutlet weak var indicatorView: UIView!
     
-    private let locationManager = CLLocationManager()
+    private let cllocationManager = CLLocationManager()
     
     private let locationInputActivationView = LocationInputActivationView()
     
@@ -36,14 +44,19 @@ class HomeController: UIViewController {
     
     var user: User?
     
+    var mainViewIsShowing = true
+    
+    var locationInputViewIsShowing = true
+    
+    var region = MKCoordinateRegion()
+    
     @IBOutlet weak var mapView: MKMapView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.cllocationManager.delegate = self
         self.navigationController?.isNavigationBarHidden = true
-        //signOut()
-        //self.locationInputView.isHidden = true
-        //self.slideIndicatorInputView(direction: "up")
+        self.slideIndicatorView()
         checkIfUserIsLoggedIn()
         self.getUser { user in
             DispatchQueue.main.async {
@@ -51,50 +64,89 @@ class HomeController: UIViewController {
                 self.nameLabel.text = self.user?.fullname
             }
         }
-        enableLocationServices()
-        configureMap()
-//        let indicatorTap = UITapGestureRecognizer(target: self, action: #selector(self.handleTap(_:)))
-//        self.indicatorView.addGestureRecognizer(indicatorTap)
-//        let optionsTap = UITapGestureRecognizer(target: self, action: #selector(self.pressedOptions(_:)))
-//        self.optionsButton.addGestureRecognizer(optionsTap)
-//        let backTap = UITapGestureRecognizer(target: self, action: #selector(self.pressedBack(_:)))
-//        self.backButton.addGestureRecognizer(backTap)
-        
-        //self.slideIndicatorView(direction: "up")
-        //locationInputActivationViewDelegate = self
-        //locationInputView.delegate = self
-        //delegate = self
-//        //view.addSubview(indicatorActivationView)
-//        indicatorActivationView.topAnchor.constraint(equalTo: view.topAnchor, constant: 60).isActive = true
-//        indicatorActivationView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-//        indicatorActivationView.heightAnchor.constraint(equalToConstant: 34).isActive = true
-//        indicatorActivationView.widthAnchor.constraint(equalToConstant: 300).isActive = true
+
+        //enableLocationServices()
+        //configureMap()
+        let indicatorTap = UITapGestureRecognizer(target: self, action: #selector(self.handleTap(_:)))
+        self.indicatorView.addGestureRecognizer(indicatorTap)
     }
     
-    @objc func pressedOptions(_ sender: UITapGestureRecognizer? = nil) {
-        print("Pressed Options")
+    override func viewWillAppear(_ animated: Bool) {
+        self.tabBarController?.selectedIndex = 1
     }
     
-    @objc func pressedBack(_ sender: UITapGestureRecognizer? = nil) {
-        print("Pressed Back")
-        self.slideIndicatorInputView(direction: "up")
+    func slideIndicatorView() {
+        DispatchQueue.main.async {
+            
+            if self.locationInputViewIsShowing {
+                UIView.animate(
+                            withDuration: 0.3,
+                            delay: 0.0,
+                            options: .curveLinear,
+                            animations: {
+                                self.topConstraint.constant = -220
+                                
+                        }) { (completed) in
+                            self.locationInputViewIsShowing = false
+                        }
+            } else {
+            
+                UIView.animate(
+                            withDuration: 0.3,
+                            delay: 0.0,
+                            options: .curveLinear,
+                            animations: {
+                                self.topConstraint.constant = 0
+                        }) { (completed) in
+                            self.locationInputViewIsShowing = true
+                        }
+            }
+        }
     }
+    
+    func slideMenu() {
+        DispatchQueue.main.async {
+            
+            if self.mainViewIsShowing {
+                UIView.animate(
+                            withDuration: 0.3,
+                            delay: 0.0,
+                            options: .curveLinear,
+                            animations: {
+                                self.leadingConstraint.constant = 250
+                                
+                        }) { (completed) in
+                            self.mainViewIsShowing = false
+                        }
+            } else {
+                
+                UIView.animate(
+                            withDuration: 0.3,
+                            delay: 0.0,
+                            options: .curveLinear,
+                            animations: {
+                                self.leadingConstraint.constant = 0
+                        }) { (completed) in
+                            self.mainViewIsShowing = true
+                        }
+            }
+        }
+    }
+    
     @IBAction func pressedHamburger(_ sender: Any) {
-        print("Pressed Options")
+        slideMenu()
     }
     
     @objc func handleTap(_ sender: UITapGestureRecognizer? = nil) {
-        self.slideIndicatorInputView(direction: "down")
-        //self.presentLocationInputView()
-        //locationInputActivationViewDelegate?.presentLocationInputView()
+        self.slideIndicatorView()
     }
     
     func configureMap() {
+        print("Configure map")
         mapView.showsUserLocation = true
         mapView.userTrackingMode = .follow
     }
     
-
     func checkIfUserIsLoggedIn() {
         if Auth.auth().currentUser?.uid == nil {
             print("User not logged in")
@@ -115,92 +167,78 @@ class HomeController: UIViewController {
         }
     }
     
-    func slideIndicatorInputView(direction: String) {
-        
-        DispatchQueue.main.async {
-            let newY = self.view.frame.origin.y - self.locationInputView.frame.height
-            if direction == "up" {
-                print("indicator up")
-                UIView.animate(
-                            withDuration: 0.3,
-                            delay: 0.0,
-                            options: .curveLinear,
-                            animations: {
-                                self.locationInputView.frame = CGRect(x: 0, y: newY, width: self.locationInputView.frame.width, height: self.locationInputView.frame.height)
-                                
-                                print("-200")
-                        }) { (completed) in
-
-                        }
-            } else {
-                self.locationInputView.isHidden = false
-                self.backButton.isEnabled = true
-                print("indicator down")
-                UIView.animate(
-                            withDuration: 0.3,
-                            delay: 0.0,
-                            options: .curveLinear,
-                            animations: {
-                                self.locationInputView.frame = CGRect(x: 0, y: 0, width: self.locationInputView.frame.width, height: self.locationInputView.frame.height)
-                                
-                                print("+200")
-                        }) { (completed) in
-
-                        }
-            }
-        }
-        
-    }
-    
-    
-    @IBAction func optionsButtonPressed(_ sender: Any) {
-        print("Pressed Option")
-    }
-    
-    
-    
     @IBAction func backButtonPressed(_ sender: Any) {
-        print("Pressed Back")
-        //self.slideIndicatorInputView(direction: "up")
+        self.slideIndicatorView()
     }
-    
     
 }
 
 extension HomeController: CLLocationManagerDelegate {
+    
     func enableLocationServices() {
-        
-        locationManager.delegate = self
-        
-        switch CLLocationManager.authorizationStatus() {
+        let authorizationStatus: CLAuthorizationStatus
+        if #available(iOS 14, *) {
+            print("Available")
+            authorizationStatus = cllocationManager.authorizationStatus
+        } else {
+            print("Not Available")
+            authorizationStatus = CLLocationManager.authorizationStatus()
+        }
+
+        switch authorizationStatus {
         case .notDetermined:
-            print("Not determined")
-            locationManager.requestWhenInUseAuthorization()
+            print("Authorization Not determined")
+            cllocationManager.requestWhenInUseAuthorization()
         case .restricted:
+            print("Authorization Restricted")
             break
         case .denied:
+            print("Authorization Denied")
             break
         case .authorizedAlways:
-            print("Always")
-            locationManager.startUpdatingLocation()
-            locationManager.desiredAccuracy = kCLLocationAccuracyBest
+            print("Authorization Always")
+            cllocationManager.desiredAccuracy = kCLLocationAccuracyBest
+            cllocationManager.startUpdatingLocation()
         case .authorizedWhenInUse:
-            print("When in use")
-            locationManager.requestAlwaysAuthorization()
+            print("Authorization When in use")
+            cllocationManager.requestAlwaysAuthorization()
         @unknown default:
+            print("Authorization Unknown")
             break
         }
+        
+        
+    }
+    
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        let location = locations.last
+
+        let center = CLLocationCoordinate2D(latitude: location!.coordinate.latitude, longitude: location!.coordinate.longitude)
+
+        let region = MKCoordinateRegion(center: center, span: MKCoordinateSpan(latitudeDelta: 1, longitudeDelta: 1))
+
+        self.mapView.setRegion(region, animated: true)
+
+        self.cllocationManager.stopUpdatingLocation()
+
+    }
+    
+    func locationManager(
+        _ manager: CLLocationManager,
+        didFailWithError error: Error
+    ) {
+        print("Location Error: \(error.localizedDescription)")
     }
     
     func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
         if manager.authorizationStatus == .authorizedWhenInUse {
-            locationManager.requestAlwaysAuthorization()
+            cllocationManager.requestAlwaysAuthorization()
         }
     }
     
 }
 
-extension HomeController: LocationInputActivationViewDelegate, LocationInputViewDelegate {
+extension HomeController: LocationInputViewDelegate {
     func dismissLocationInputView() {
         //
         print("Dismiss LocationView")
@@ -232,14 +270,6 @@ extension HomeController: LocationInputActivationViewDelegate, LocationInputView
           
         }
 
-    }
-    
-    func presentLocationInputView() {
-        
-        DispatchQueue.main.async {
-            self.slideIndicatorInputView(direction: "down")
-        }
-        
     }
     
     
