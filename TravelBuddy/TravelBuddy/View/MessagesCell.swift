@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Firebase
 
 class MessagesCell: UITableViewCell {
     
@@ -16,6 +17,31 @@ class MessagesCell: UITableViewCell {
     @IBOutlet weak var typeLabel: UILabel!
     
     @IBOutlet weak var profileImage: UIImageView!
+    
+    var user: User?
+    
+    var message: Message? {
+        
+        didSet {
+    
+            if let seconds = message?.creationDate {
+                let dateFormatter = DateFormatter()
+                dateFormatter.dateFormat = "hh:mm a"
+                timeLabel.text = dateFormatter.string(from: seconds)
+            }
+            
+            self.configureUserData()
+        }
+    }
+    
+    func configureUserData() {
+        guard let chatPartnerId = self.message?.getChatPartnerId() else { return }
+        REF_USERS.child(chatPartnerId).getData { error, snapshot in
+            let snap = snapshot?.value
+            print("\nMessage Cell Snapshot: \(snap)")
+            
+        }
+    }
     
     override func awakeFromNib() {
         super.awakeFromNib()

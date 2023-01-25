@@ -383,6 +383,7 @@
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="collectionView" destination="T3b-ZE-0qg" id="qu3-qf-IZy"/>
                         <outlet property="sendButton" destination="keU-7t-oit" id="4dC-Ut-esr"/>
                         <outlet property="textField" destination="y6n-RX-KjB" id="eyw-hK-BtP"/>
                     </connections>

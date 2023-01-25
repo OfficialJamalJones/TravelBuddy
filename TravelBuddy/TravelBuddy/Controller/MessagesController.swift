@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Firebase
 
 class MessagesController: UITableViewController {
 
@@ -15,8 +16,28 @@ class MessagesController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        fetchMessages()
         
-        
+    }
+    
+    func fetchMessages() {
+        guard let currentId = Auth.auth().currentUser?.uid else { return }
+        USER_MESSAGES_REF.child(currentId).observe(.childAdded) { snapshot in
+            let uid = snapshot.key
+            USER_MESSAGES_REF.child(currentId).child(uid).observe(.childAdded) { snapshot in
+                let messageId = snapshot.key
+                self.fetchMessage(withMessageId: messageId)
+            }
+        }
+    }
+    
+    func fetchMessage(withMessageId messageId: String) {
+        MESSAGES_REF.child(messageId).observeSingleEvent(of: .value) { snapshot in
+            guard let dictionary = snapshot.value as? Dictionary<String, AnyObject> else { return }
+            let message = Message(dictionary: dictionary)
+            self.messages.append(message)
+            self.tableView.reloadData()
+        }
     }
 
     // MARK: - Table view data source
@@ -31,14 +52,15 @@ class MessagesController: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 5
-        //return messages.count
+        return messages.count
     }
 
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: reuseIdentifier, for: indexPath) as!  MessagesCell
 
+        let message = messages[indexPath.row]
+        cell.message = message
         cell.profileImage.image = UIImage(systemName: "person")
         cell.nameLabel.text = "Jamal"
         cell.typeLabel.text = "Passenger"
@@ -62,8 +84,8 @@ class MessagesController: UITableViewController {
         let destinationVC = segue.destination as! ChatController
         //get from user
         
-        let uid = "100"
-        let dict = ["fullname": "Jamal", "email": "email", "accountType": 0] as [String : Any]
+        let uid = "YoASw2J3UZQ6ff2LNzMfq3ut2Ii2"
+        let dict = ["fullname": "test", "email": "test@yopmail.com", "accountType": 0] as [String : Any]
         destinationVC.user = User(uid: uid, dictionary: dict)
             
     }

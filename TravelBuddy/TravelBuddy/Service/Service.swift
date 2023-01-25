@@ -15,6 +15,8 @@ let DB_REF = Database.database().reference()
 let REF_USERS = DB_REF.child("users")
 let REF_DRIVER_LOCATIONS = DB_REF.child("driver-locations")
 let REF_TRIPS = DB_REF.child("trips")
+let MESSAGES_REF = DB_REF.child("messages")
+let USER_MESSAGES_REF = DB_REF.child("user_messages")
 
 // MARK: - DriverService
 
