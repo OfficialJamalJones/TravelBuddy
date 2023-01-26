@@ -28,6 +28,8 @@ class ChatController: UIViewController {
         view.addGestureRecognizer(tap)
         
         self.observeMessages()
+        
+        //self.collectionView.
     }
 
     @objc func keyboardWillShow(notification: NSNotification) {
@@ -88,8 +90,10 @@ class ChatController: UIViewController {
             
             guard let dictionary = snapshot.value as? Dictionary<String, AnyObject> else { return }
             let message = Message(dictionary: dictionary)
+            print("Current Message: \(message.messageText)")
             self.collectionView.messages.append(message)
             self.collectionView.reloadData()
+            print("Messages: \(self.collectionView.messages)")
         }
     }
     

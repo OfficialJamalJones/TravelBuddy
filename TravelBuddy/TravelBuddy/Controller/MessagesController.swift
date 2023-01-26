@@ -14,11 +14,40 @@ class MessagesController: UITableViewController {
     
     var messages = [Message]()
     
+    var users = [User]()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        fetchMessages()
+        self.fetchUsers()
+        DispatchQueue.main.async {
+            
+        }
         
     }
+    
+    func fetchUsers() {
+        
+        guard let currentId = Auth.auth().currentUser?.uid else { return }
+        REF_USERS.getData { error, snapshot in
+            print("User Snapshot: \(snapshot)")
+            if let values = snapshot?.value as? [String: Any] {
+                for value in values {
+                    if value.key != currentId {
+                        REF_USERS.child(value.key).getData { error, snapshot in
+                            if let dictionary = snapshot?.value as? [String: Any] {
+                                let user = User(uid: snapshot!.key, dictionary: dictionary)
+                                self.users.append(user)
+                                self.tableView.reloadData()
+                            }
+                        }
+                    }
+                    
+                }
+            }
+        }
+        
+    }
+    
     
     func fetchMessages() {
         guard let currentId = Auth.auth().currentUser?.uid else { return }
@@ -26,9 +55,14 @@ class MessagesController: UITableViewController {
             let uid = snapshot.key
             USER_MESSAGES_REF.child(currentId).child(uid).observe(.childAdded) { snapshot in
                 let messageId = snapshot.key
-                self.fetchMessage(withMessageId: messageId)
+                if currentId != messageId {
+                    self.fetchMessage(withMessageId: messageId)
+                }
+                
             }
+            print("\nMessages: \(self.messages)")
         }
+        
     }
     
     func fetchMessage(withMessageId messageId: String) {
@@ -38,6 +72,7 @@ class MessagesController: UITableViewController {
             self.messages.append(message)
             self.tableView.reloadData()
         }
+        
     }
 
     // MARK: - Table view data source
@@ -52,21 +87,25 @@ class MessagesController: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return messages.count
+        return users.count
     }
 
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        
         let cell = tableView.dequeueReusableCell(withIdentifier: reuseIdentifier, for: indexPath) as!  MessagesCell
-
-        let message = messages[indexPath.row]
-        cell.message = message
+        let user = self.users[indexPath.row]
+        cell.user = user
         cell.profileImage.image = UIImage(systemName: "person")
-        cell.nameLabel.text = "Jamal"
-        cell.typeLabel.text = "Passenger"
-        cell.timeLabel.text = "4h"
-
+        cell.nameLabel.text = user.fullname
+        if cell.user?.accountType == .passenger {
+            cell.typeLabel.text = "Passenger"
+        } else {
+            cell.typeLabel.text = "Driver"
+        }
+        
         return cell
+        
     }
     
 
@@ -82,11 +121,9 @@ class MessagesController: UITableViewController {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         
         let destinationVC = segue.destination as! ChatController
-        //get from user
         
-        let uid = "YoASw2J3UZQ6ff2LNzMfq3ut2Ii2"
-        let dict = ["fullname": "test", "email": "test@yopmail.com", "accountType": 0] as [String : Any]
-        destinationVC.user = User(uid: uid, dictionary: dict)
+        let cell = sender as! MessagesCell
+        destinationVC.user = cell.user
             
     }
     

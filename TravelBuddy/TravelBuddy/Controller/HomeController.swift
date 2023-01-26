@@ -54,6 +54,7 @@ class HomeController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        //signOut()
         self.cllocationManager.delegate = self
         self.navigationController?.isNavigationBarHidden = true
         self.slideIndicatorView()

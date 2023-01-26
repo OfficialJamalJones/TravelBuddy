@@ -6,6 +6,7 @@
 //
 
 import CoreLocation
+import Firebase
 
 enum AccountType: Int {
     case passenger
@@ -30,4 +31,56 @@ struct User {
             self.accountType = AccountType(rawValue: index)
         }
     }
+    
+    static func getLastMessage(from fromId: String, completionHandler: (Message?) -> Void) {
+        var messages = [Message]()
+        guard let currentId = Auth.auth().currentUser?.uid else { return }
+        USER_MESSAGES_REF.child(currentId).observe(.childAdded) { snapshot in
+            
+            print("USER_MESSAGES_REF1: \(snapshot)")
+            let uid = snapshot.key
+            if uid == fromId {
+                USER_MESSAGES_REF.child(currentId).child(fromId).observe(.childAdded) { snapshot in
+                    print("USER_MESSAGES_REF2: \(snapshot)")
+                    let messageId = snapshot.key
+                    MESSAGES_REF.child(messageId).observeSingleEvent(of: .value) { snapshot in
+                        guard let dictionary = snapshot.value as? [String: AnyObject] else { return }
+                        let message = Message(dictionary: dictionary)
+                        print("Message: \(messages)")
+                        messages.append(message)
+                    }
+                    
+                }
+            }
+            
+        }
+        completionHandler(messages.last)
+    }
+    
+    static func getMessages(from fromId: String, completionHandler: ([Message]) -> Void) {
+        var messages = [Message]()
+        guard let currentId = Auth.auth().currentUser?.uid else { return }
+        USER_MESSAGES_REF.child(currentId).observe(.childAdded) { snapshot in
+            
+            print("USER_MESSAGES_REF1: \(snapshot)")
+            let uid = snapshot.key
+            if uid == fromId {
+                USER_MESSAGES_REF.child(currentId).child(fromId).observe(.childAdded) { snapshot in
+                    print("USER_MESSAGES_REF2: \(snapshot)")
+                    let messageId = snapshot.key
+                    MESSAGES_REF.child(messageId).observeSingleEvent(of: .value) { snapshot in
+                        guard let dictionary = snapshot.value as? [String: AnyObject] else { return }
+                        let message = Message(dictionary: dictionary)
+                        print("Message: \(messages)")
+                        messages.append(message)
+                    }
+                    
+                }
+            }
+            
+        }
+        completionHandler(messages)
+    }
+    
+    
 }

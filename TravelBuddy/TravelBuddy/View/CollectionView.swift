@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Firebase
 
 private let reuseIdentifier = "ChatCell"
 
@@ -42,13 +43,29 @@ class CollectionView: UICollectionView, UICollectionViewDataSource, UICollection
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as! ChatCell
-        cell.backgroundColor = .red
+//        cell.rightLabel.layer.cornerRadius = cell.rightLabel.frame.size.height/3.0
+//        cell.rightLabel.layer.masksToBounds = true
+        guard let currentId = Auth.auth().currentUser?.uid else { return UICollectionViewCell() }
+        let message = self.messages[indexPath.row]
+        let fromId = self.messages[indexPath.row].fromId
+        if fromId == currentId {
+            cell.leftLabel.backgroundColor = .clear
+            cell.rightLabel.layer.cornerRadius = 6
+            cell.rightLabel.layer.masksToBounds = true
+            cell.rightLabel.text = message.messageText
+        } else {
+            cell.rightLabel.backgroundColor = .clear
+            cell.leftLabel.layer.cornerRadius = 6
+            cell.leftLabel.layer.masksToBounds = true
+            cell.leftLabel.text = message.messageText
+        }
+
         return cell
     }
     
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: self.frame.width / 2, height: 50)
-    }
+//    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+//        return CGSize(width: self.frame.width, height: 50)
+//    }
 
     // MARK: UICollectionViewDelegate
 
