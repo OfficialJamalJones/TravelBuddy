@@ -22,8 +22,6 @@ class HomeController: UIViewController {
     
     @IBOutlet weak var leadingConstraint: NSLayoutConstraint!
     
-    @IBOutlet weak var mainView: UIView!
-    
     @IBOutlet weak var nameLabel: UILabel!
     
     @IBOutlet weak var backButton: UIButton!
@@ -54,7 +52,6 @@ class HomeController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        //signOut()
         self.cllocationManager.delegate = self
         self.navigationController?.isNavigationBarHidden = true
         self.slideIndicatorView()
@@ -66,43 +63,42 @@ class HomeController: UIViewController {
             }
         }
 
-        //enableLocationServices()
+        enableLocationServices()
         //configureMap()
         let indicatorTap = UITapGestureRecognizer(target: self, action: #selector(self.handleTap(_:)))
         self.indicatorView.addGestureRecognizer(indicatorTap)
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        checkIfUserIsLoggedIn()
         self.tabBarController?.selectedIndex = 1
     }
     
     func slideIndicatorView() {
-        DispatchQueue.main.async {
-            
-            if self.locationInputViewIsShowing {
-                UIView.animate(
-                            withDuration: 0.3,
-                            delay: 0.0,
-                            options: .curveLinear,
-                            animations: {
-                                self.topConstraint.constant = -220
-                                
-                        }) { (completed) in
-                            self.locationInputViewIsShowing = false
-                        }
-            } else {
-            
-                UIView.animate(
-                            withDuration: 0.3,
-                            delay: 0.0,
-                            options: .curveLinear,
-                            animations: {
-                                self.topConstraint.constant = 0
-                        }) { (completed) in
-                            self.locationInputViewIsShowing = true
-                        }
-            }
+        if self.locationInputViewIsShowing {
+            UIView.animate(
+                        withDuration: 0.3,
+                        delay: 0.0,
+                        options: .curveLinear,
+                        animations: {
+                            self.topConstraint.constant = -220
+                            
+                    }) { (completed) in
+                        self.locationInputViewIsShowing = false
+                    }
+        } else {
+        
+            UIView.animate(
+                        withDuration: 0.3,
+                        delay: 0.0,
+                        options: .curveLinear,
+                        animations: {
+                            self.topConstraint.constant = 0
+                    }) { (completed) in
+                        self.locationInputViewIsShowing = true
+                    }
         }
+    
     }
     
     func slideMenu() {
@@ -144,8 +140,15 @@ class HomeController: UIViewController {
     
     func configureMap() {
         print("Configure map")
-        mapView.showsUserLocation = true
-        mapView.userTrackingMode = .follow
+        DispatchQueue.main.async {
+            self.cllocationManager.desiredAccuracy = kCLLocationAccuracyBest
+            self.cllocationManager.distanceFilter = kCLHeadingFilterNone
+            self.cllocationManager.startUpdatingLocation()
+            
+//            self.mapView.showsUserLocation = true
+//            self.mapView.userTrackingMode = .follow
+        }
+        
     }
     
     func checkIfUserIsLoggedIn() {
@@ -198,8 +201,7 @@ extension HomeController: CLLocationManagerDelegate {
             break
         case .authorizedAlways:
             print("Authorization Always")
-            cllocationManager.desiredAccuracy = kCLLocationAccuracyBest
-            cllocationManager.startUpdatingLocation()
+            self.configureMap()
         case .authorizedWhenInUse:
             print("Authorization When in use")
             cllocationManager.requestAlwaysAuthorization()
@@ -211,31 +213,31 @@ extension HomeController: CLLocationManagerDelegate {
         
     }
     
-    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        let location = locations.last
-
-        let center = CLLocationCoordinate2D(latitude: location!.coordinate.latitude, longitude: location!.coordinate.longitude)
-
-        let region = MKCoordinateRegion(center: center, span: MKCoordinateSpan(latitudeDelta: 1, longitudeDelta: 1))
-
-        self.mapView.setRegion(region, animated: true)
-
-        self.cllocationManager.stopUpdatingLocation()
-
-    }
-    
-    func locationManager(
-        _ manager: CLLocationManager,
-        didFailWithError error: Error
-    ) {
-        print("Location Error: \(error.localizedDescription)")
-    }
-    
-    func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
-        if manager.authorizationStatus == .authorizedWhenInUse {
-            cllocationManager.requestAlwaysAuthorization()
-        }
-    }
+//    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+//        let location = locations.last
+//
+//        let center = CLLocationCoordinate2D(latitude: location!.coordinate.latitude, longitude: location!.coordinate.longitude)
+//
+//        let region = MKCoordinateRegion(center: center, span: MKCoordinateSpan(latitudeDelta: 1, longitudeDelta: 1))
+//
+//        self.mapView.setRegion(region, animated: true)
+//
+//        self.cllocationManager.stopUpdatingLocation()
+//
+//    }
+//
+//    func locationManager(
+//        _ manager: CLLocationManager,
+//        didFailWithError error: Error
+//    ) {
+//        print("Location Error: \(error.localizedDescription)")
+//    }
+//
+//    func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
+//        if manager.authorizationStatus == .authorizedWhenInUse {
+//            cllocationManager.requestAlwaysAuthorization()
+//        }
+//    }
     
 }
 

@@ -20,6 +20,11 @@ class CollectionView: UICollectionView, UICollectionViewDataSource, UICollection
             self.delegate = self
     }
     
+    func estimateFrameForText(_ text: String) -> CGRect {
+        let size = CGSize(width: 200, height: 1000)
+        return NSString(string: text).boundingRect(with: size, context: nil)
+    }
+    
     /*
     // MARK: - Navigation
 
@@ -43,8 +48,6 @@ class CollectionView: UICollectionView, UICollectionViewDataSource, UICollection
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as! ChatCell
-//        cell.rightLabel.layer.cornerRadius = cell.rightLabel.frame.size.height/3.0
-//        cell.rightLabel.layer.masksToBounds = true
         guard let currentId = Auth.auth().currentUser?.uid else { return UICollectionViewCell() }
         let message = self.messages[indexPath.row]
         let fromId = self.messages[indexPath.row].fromId
@@ -53,18 +56,25 @@ class CollectionView: UICollectionView, UICollectionViewDataSource, UICollection
             cell.rightLabel.layer.cornerRadius = 6
             cell.rightLabel.layer.masksToBounds = true
             cell.rightLabel.text = message.messageText
+            cell.rightLabel.numberOfLines = 0
+            cell.rightLabel.sizeToFit()
         } else {
             cell.rightLabel.backgroundColor = .clear
             cell.leftLabel.layer.cornerRadius = 6
             cell.leftLabel.layer.masksToBounds = true
             cell.leftLabel.text = message.messageText
+            cell.leftLabel.numberOfLines = 0
+            cell.leftLabel.sizeToFit()
         }
 
         return cell
     }
     
 //    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-//        return CGSize(width: self.frame.width, height: 50)
+//        var height: CGFloat = 80
+//        let message = self.messages[indexPath.row]
+//        height = estimateFrameForText(message.messageText).height + 20
+//        return CGSize(width: 200, height: height)
 //    }
 
     // MARK: UICollectionViewDelegate
