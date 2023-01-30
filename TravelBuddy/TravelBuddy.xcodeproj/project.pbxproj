@@ -22,6 +22,7 @@
 		026C9E772980649D0051B493 /* ChatController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 026C9E762980649D0051B493 /* ChatController.swift */; };
 		026C9E792980683C0051B493 /* ChatCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 026C9E782980683C0051B493 /* ChatCell.swift */; };
 		026C9E7B298079360051B493 /* CollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 026C9E7A298079360051B493 /* CollectionView.swift */; };
+		0298BDD629880CB1004815DB /* ImageController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0298BDD529880CB1004815DB /* ImageController.swift */; };
 		02A0765529858EFE0054D674 /* SettingsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02A0765429858EFD0054D674 /* SettingsController.swift */; };
 		02A0765729858FE00054D674 /* SettingsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02A0765629858FE00054D674 /* SettingsCell.swift */; };
 		02AF198E29799F5D0048DE49 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02AF198D29799F5D0048DE49 /* AppDelegate.swift */; };
@@ -97,6 +98,7 @@
 		026C9E762980649D0051B493 /* ChatController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatController.swift; sourceTree = "<group>"; };
 		026C9E782980683C0051B493 /* ChatCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatCell.swift; sourceTree = "<group>"; };
 		026C9E7A298079360051B493 /* CollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionView.swift; sourceTree = "<group>"; };
+		0298BDD529880CB1004815DB /* ImageController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageController.swift; sourceTree = "<group>"; };
 		02A0765429858EFD0054D674 /* SettingsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsController.swift; sourceTree = "<group>"; };
 		02A0765629858FE00054D674 /* SettingsCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsCell.swift; sourceTree = "<group>"; };
 		02AF198A29799F5D0048DE49 /* TravelBuddy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TravelBuddy.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -261,6 +263,7 @@
 				026C9E7029804A010051B493 /* MessagesController.swift */,
 				026C9E762980649D0051B493 /* ChatController.swift */,
 				02A0765429858EFD0054D674 /* SettingsController.swift */,
+				0298BDD529880CB1004815DB /* ImageController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -459,6 +462,7 @@
 				02A0765729858FE00054D674 /* SettingsCell.swift in Sources */,
 				0232D239297B2EFF00716277 /* Service.swift in Sources */,
 				026C9E75298061890051B493 /* Message.swift in Sources */,
+				0298BDD629880CB1004815DB /* ImageController.swift in Sources */,
 				02A0765529858EFE0054D674 /* SettingsController.swift in Sources */,
 				026C9E772980649D0051B493 /* ChatController.swift in Sources */,
 				0232D237297B2ED000716277 /* User.swift in Sources */,

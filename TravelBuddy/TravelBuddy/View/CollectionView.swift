@@ -52,19 +52,19 @@ class CollectionView: UICollectionView, UICollectionViewDataSource, UICollection
         let message = self.messages[indexPath.row]
         let fromId = self.messages[indexPath.row].fromId
         if fromId == currentId {
-            cell.leftLabel.backgroundColor = .clear
-            cell.rightLabel.layer.cornerRadius = 6
-            cell.rightLabel.layer.masksToBounds = true
-            cell.rightLabel.text = message.messageText
-            cell.rightLabel.numberOfLines = 0
-            cell.rightLabel.sizeToFit()
+            cell.leftText.backgroundColor = .clear
+            cell.rightText.layer.cornerRadius = 6
+            cell.rightText.layer.masksToBounds = true
+            cell.rightText.text = message.messageText
+            cell.rightText.allowsEditingTextAttributes = false
+            cell.rightText.sizeToFit()
         } else {
-            cell.rightLabel.backgroundColor = .clear
-            cell.leftLabel.layer.cornerRadius = 6
-            cell.leftLabel.layer.masksToBounds = true
-            cell.leftLabel.text = message.messageText
-            cell.leftLabel.numberOfLines = 0
-            cell.leftLabel.sizeToFit()
+            cell.rightText.backgroundColor = .clear
+            cell.leftText.layer.cornerRadius = 6
+            cell.leftText.layer.masksToBounds = true
+            cell.leftText.text = message.messageText
+            cell.leftText.allowsEditingTextAttributes = false
+            cell.leftText.sizeToFit()
         }
 
         return cell
@@ -74,7 +74,7 @@ class CollectionView: UICollectionView, UICollectionViewDataSource, UICollection
 //        var height: CGFloat = 80
 //        let message = self.messages[indexPath.row]
 //        height = estimateFrameForText(message.messageText).height + 20
-//        return CGSize(width: 200, height: height)
+//        return CGSize(width: 300, height: 80)
 //    }
 
     // MARK: UICollectionViewDelegate

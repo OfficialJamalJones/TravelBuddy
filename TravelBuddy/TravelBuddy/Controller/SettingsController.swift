@@ -28,6 +28,19 @@ class SettingsController: UITableViewController {
             print("Error: \(error.localizedDescription)")
         }
     }
+    
+    
+    func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell,
+        forRowAtIndexPath indexPath: NSIndexPath)
+    {
+        cell.backgroundColor = .systemGray
+        if (indexPath.row % 2 == 0)
+        {
+            cell.backgroundColor = .systemGray
+        } else {
+            cell.backgroundColor = .lightGray
+        }
+    }
 
     // MARK: - Table view data source
 
@@ -38,20 +51,30 @@ class SettingsController: UITableViewController {
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of rows
-        return 1
+        return 2
     }
 
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "SettingsCell", for: indexPath) as! SettingsCell
 
-
+        if indexPath.row == 1 {
+            cell.settingsLabel.text = "Add Photo"
+            cell.backgroundColor = .link
+        } else {
+            cell.backgroundColor = .lightGray
+        }
         return cell
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         print("Selected: \(indexPath.row)")
-        self.signOut()
+        if indexPath.row == 0 {
+            self.signOut()
+        } else {
+            guard let currentId = Auth.auth().currentUser?.uid else { return }
+            
+        }
     }
     
 

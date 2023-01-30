@@ -97,6 +97,15 @@ class MessagesController: UITableViewController {
         let user = self.users[indexPath.row]
         cell.user = user
         cell.profileImage.image = UIImage(systemName: "person")
+        User.loadImage(imageString: user.uid) { image in
+            DispatchQueue.main.async {
+                //print("Image returned: \(image)")
+                cell.profileImage.image = image ?? UIImage(systemName: "person")
+                cell.profileImage.layer.cornerRadius = cell.profileImage.frame.width / 2
+                cell.profileImage.layer.masksToBounds = true
+            }
+        }
+        
         cell.nameLabel.text = user.fullname
         if cell.user?.accountType == .passenger {
             cell.typeLabel.text = "Passenger"

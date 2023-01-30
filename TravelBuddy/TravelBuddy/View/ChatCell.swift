@@ -9,9 +9,9 @@ import UIKit
 
 class ChatCell: UICollectionViewCell {
     
-    @IBOutlet weak var leftLabel: UILabel!
+    @IBOutlet weak var leftText: UITextView!
     
-    @IBOutlet weak var rightLabel: UILabel!
+    @IBOutlet weak var rightText: UITextView!
     
     override init(frame: CGRect) {
         super.init(frame: frame)

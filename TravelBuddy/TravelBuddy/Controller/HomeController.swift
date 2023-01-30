@@ -22,7 +22,7 @@ class HomeController: UIViewController {
     
     @IBOutlet weak var leadingConstraint: NSLayoutConstraint!
     
-    @IBOutlet weak var nameLabel: UILabel!
+    @IBOutlet weak var imageView: UIImageView!
     
     @IBOutlet weak var backButton: UIButton!
 
@@ -56,10 +56,18 @@ class HomeController: UIViewController {
         self.navigationController?.isNavigationBarHidden = true
         self.slideIndicatorView()
         checkIfUserIsLoggedIn()
-        self.getUser { user in
+        User.getUser { user in
             DispatchQueue.main.async {
                 self.user = user
-                self.nameLabel.text = self.user?.fullname
+                let imageString = ""
+                User.loadImage(imageString: self.user?.uid ?? imageString) { image in
+                    DispatchQueue.main.async {
+                        self.imageView.image = image
+                        self.imageView.layer.cornerRadius = self.imageView.frame.width / 2
+                        self.imageView.layer.masksToBounds = true
+                    }
+
+                }
             }
         }
 
@@ -71,7 +79,7 @@ class HomeController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         checkIfUserIsLoggedIn()
-        self.tabBarController?.selectedIndex = 1
+        
     }
     
     func slideIndicatorView() {
@@ -160,16 +168,10 @@ class HomeController: UIViewController {
             
         } else {
             print("User \(String(describing: Auth.auth().currentUser?.uid)) is logged in")
+            self.tabBarController?.selectedIndex = 1
         }
     }
-    
-    func signOut() {
-        do {
-            try Auth.auth().signOut()
-        } catch let error {
-            print("Error: \(error.localizedDescription)")
-        }
-    }
+
     
     @IBAction func backButtonPressed(_ sender: Any) {
         self.slideIndicatorView()
@@ -250,29 +252,6 @@ extension HomeController: LocationInputViewDelegate {
     
     func executeSearch(query: String) {
         //
-    }
-    
-    func getUser(_ completion: @escaping (_ user: User) -> ()) {
-        let currentUser = Auth.auth().currentUser
-        var user = User(uid: "", dictionary: ["":""])
-        if let currentUser = currentUser {
-          // The user's ID, unique to the Firebase project.
-          // Do NOT use this value to authenticate with your backend server,
-          // if you have one. Use getTokenWithCompletion:completion: instead.
-            REF_USERS.child(currentUser.uid).observeSingleEvent(of: .value, with: { snapshot in
-              // Get user value
-                let dict = snapshot.value as? NSDictionary
-                user = User(uid: currentUser.uid, dictionary: dict as! [String : Any])
-                completion(user)
-            
-              // ...
-            }) { error in
-              print(error.localizedDescription)
-            }
-            
-          
-        }
-
     }
     
     
