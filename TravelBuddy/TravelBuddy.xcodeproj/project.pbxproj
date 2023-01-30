@@ -23,6 +23,7 @@
 		026C9E792980683C0051B493 /* ChatCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 026C9E782980683C0051B493 /* ChatCell.swift */; };
 		026C9E7B298079360051B493 /* CollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 026C9E7A298079360051B493 /* CollectionView.swift */; };
 		0298BDD629880CB1004815DB /* ImageController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0298BDD529880CB1004815DB /* ImageController.swift */; };
+		0298BDD82988333F004815DB /* LocationCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0298BDD72988333F004815DB /* LocationCell.swift */; };
 		02A0765529858EFE0054D674 /* SettingsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02A0765429858EFD0054D674 /* SettingsController.swift */; };
 		02A0765729858FE00054D674 /* SettingsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02A0765629858FE00054D674 /* SettingsCell.swift */; };
 		02AF198E29799F5D0048DE49 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02AF198D29799F5D0048DE49 /* AppDelegate.swift */; };
@@ -99,6 +100,7 @@
 		026C9E782980683C0051B493 /* ChatCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatCell.swift; sourceTree = "<group>"; };
 		026C9E7A298079360051B493 /* CollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionView.swift; sourceTree = "<group>"; };
 		0298BDD529880CB1004815DB /* ImageController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageController.swift; sourceTree = "<group>"; };
+		0298BDD72988333F004815DB /* LocationCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationCell.swift; sourceTree = "<group>"; };
 		02A0765429858EFD0054D674 /* SettingsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsController.swift; sourceTree = "<group>"; };
 		02A0765629858FE00054D674 /* SettingsCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsCell.swift; sourceTree = "<group>"; };
 		02AF198A29799F5D0048DE49 /* TravelBuddy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TravelBuddy.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -277,6 +279,7 @@
 				026C9E782980683C0051B493 /* ChatCell.swift */,
 				026C9E7A298079360051B493 /* CollectionView.swift */,
 				02A0765629858FE00054D674 /* SettingsCell.swift */,
+				0298BDD72988333F004815DB /* LocationCell.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -458,6 +461,7 @@
 				0232D23D297B2F6700716277 /* LocationHandler.swift in Sources */,
 				0232D23C297B2F6700716277 /* Extensions.swift in Sources */,
 				026C9E792980683C0051B493 /* ChatCell.swift in Sources */,
+				0298BDD82988333F004815DB /* LocationCell.swift in Sources */,
 				0232D22D297AC75200716277 /* HomeController.swift in Sources */,
 				02A0765729858FE00054D674 /* SettingsCell.swift in Sources */,
 				0232D239297B2EFF00716277 /* Service.swift in Sources */,
