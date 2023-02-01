@@ -18,6 +18,8 @@ protocol LocationInputActivationViewDelegate {
 
 class HomeController: UIViewController {
     
+    @IBOutlet weak var menuTableView: UITableView!
+    
     @IBOutlet weak var currentLocationField: UITextField!
     
     @IBOutlet weak var destinationField: UITextField!
@@ -29,6 +31,7 @@ class HomeController: UIViewController {
     @IBOutlet weak var trailingConstraint: NSLayoutConstraint!
     
     @IBOutlet weak var leadingConstraint: NSLayoutConstraint!
+    
     
     @IBOutlet weak var imageView: UIImageView!
     
@@ -73,9 +76,13 @@ class HomeController: UIViewController {
         super.viewDidLoad()
         self.tableView.delegate = self
         self.tableView.dataSource = self
+        self.menuTableView.delegate = self
+        self.menuTableView.dataSource = self
         self.currentLocationField.delegate = self
         self.destinationField.delegate = self
         self.mapView.delegate = self
+        self.tabBarController?.tabBar.isTranslucent = false
+        self.tabBarController?.tabBar.backgroundColor = .white
         self.currentLocationField.addTarget(self, action: #selector(textFieldDidChange(_:)),
                                   for: .editingChanged)
         self.destinationField.addTarget(self, action: #selector(textFieldDidChange(_:)),
@@ -114,6 +121,9 @@ class HomeController: UIViewController {
         
     }
     
+    @IBAction func pressedCloseButton(_ sender: Any) {
+        self.slideMenu()
+    }
     
     @IBAction func pressedRouteButton(_ sender: Any) {
         self.routeCoordinates.removeAll()
@@ -494,12 +504,20 @@ extension HomeController: UITableViewDelegate, UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return searchResults.count
+        if tableView.restorationIdentifier == "search" {
+            return searchResults.count
+        } else {
+            return 6
+        }
+        
     }
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        
         let view = UILabel()
-        view.backgroundColor = .systemGray6
+        if tableView.restorationIdentifier == "search" {
+            view.backgroundColor = .systemGray6
+        }
         return view
     }
     
@@ -509,14 +527,46 @@ extension HomeController: UITableViewDelegate, UITableViewDataSource {
 
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    
+        if tableView.restorationIdentifier == "search" {
+            let cell = tableView.dequeueReusableCell(withIdentifier: "LocationCell", for: indexPath) as!  LocationCell
+            
+            let location = self.searchResults[indexPath.row]
+            print("Location: \(location)")
+            cell.titleLabel.text = location.name
+            cell.subTitleLabel.text = location.address
+            return cell
+        } else {
+            let cell = tableView.dequeueReusableCell(withIdentifier: "MenuCell", for: indexPath) as!  MenuCell
+            
+            let index = indexPath.row
+            
+            switch index {
+            case 0:
+                cell.menuLabel.text = "Home"
+                cell.menuImage.image = UIImage(systemName: "house.fill")
+            case 1:
+                cell.menuLabel.text = "Messages"
+                cell.menuImage.image = UIImage(systemName: "message")
+            case 2:
+                cell.menuLabel.text = "Profile"
+                cell.menuImage.image = UIImage(systemName: "person.fill")
+            case 3:
+                cell.menuLabel.text = "Settings"
+                cell.menuImage.image = UIImage(systemName: "gear")
+            case 4:
+                cell.menuLabel.text = "Legal"
+                cell.menuImage.image = UIImage(systemName: "rectangle.and.pencil.and.ellipsis")
+            case 5:
+                cell.menuLabel.text = "Social"
+                cell.menuImage.image = UIImage(systemName: "hand.thumbsup.circle.fill")
+            default:
+                cell.menuLabel.text = "Testing: \(index)"
+            }
+            
+            return cell
+        }
         
-        let cell = tableView.dequeueReusableCell(withIdentifier: "LocationCell", for: indexPath) as!  LocationCell
-        
-        let location = self.searchResults[indexPath.row]
-        print("Location: \(location)")
-        cell.titleLabel.text = location.name
-        cell.subTitleLabel.text = location.address
-        return cell
         
     }
     
